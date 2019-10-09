@@ -1,6 +1,8 @@
 # money-transfer
 Simple project service for money transfer built with Java.
 
+[![Build Status](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment.svg?branch=master "Travis CI")](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment) 
+
 # What dependencies I have used ?
 
 * `JOOQ`: a fluent API for typesafe SQL query construction and execution.
