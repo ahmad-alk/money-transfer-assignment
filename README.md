@@ -1,7 +1,6 @@
-# money-transfer
-Simple project service for money transfer built with Java.
+# Money Transfer [![Build Status](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment.svg?branch=master "Travis CI")](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment) 
 
-[![Build Status](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment.svg?branch=master "Travis CI")](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment) 
+Simple project service for money transfer built with Java.
 
 # What dependencies I have used ?
 
