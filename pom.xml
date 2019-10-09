@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.revolut.example</groupId>
+    <artifactId>money-transfer</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>money-transfer</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!--        <db.url>jdbc:h2:tcp://localhost/~/revolut_schema;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false</db.url>-->
+        <db.url>jdbc:h2:mem:revolut_schema;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false</db.url>
+        <db.username>sa</db.username>
+        <hikaricp.version>3.4.1</hikaricp.version>
+        <jooq.version>3.12.1</jooq.version>
+        <slf4j.version>1.7.26</slf4j.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Fast, simple, reliable. HikariCP is a "zero-overhead" production ready JDBC connection pool.
+          At roughly 130Kb, the library is very light. -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+        </dependency>
+
+        <!-- JOOQ, a fluent API for type safe SQL query construction and execution.-->
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+
+        <!-- Create an up-to-date foundation for developer-side testing on the JVM -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--Javalin is a true micro Java REST API library and has very few dependencies-->
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
+        <!-- Production-quality log4j-replacement with native SLF4J API support -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- Embeddable RDBMS written in Java-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.199</version>
+        </dependency>
+
+        <!-- Packages that use Versioned. Package. Description-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.0.pr1</version>
+        </dependency>
+
+
+        <!-- Flyway is an open-source database migration tool. It strongly favors simplicity and convention over configuration -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>6.0.4</version>
+        </dependency>
+
+        <!-- Tasty mocking framework for unit tests in Java -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.23.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Java library that provides a domain-specific language (DSL) for writing powerful, maintainable tests for RESTful APIs -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>4.1.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- This library catches exceptions in a single line of code and makes them available for further analysis.        -->
+        <dependency>
+            <groupId>eu.codearte.catch-exception</groupId>
+            <artifactId>catch-exception</artifactId>
+            <version>1.4.4</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.extensions.ddl.DDLDatabase</name>
+                            <properties>
+                                <property>
+                                    <key>scripts</key>
+                                    <value>${basedir}/src/main/resources/db/migration/*</value>
+                                </property>
+                            </properties>
+                        </database>
+                        <target>
+                            <packageName>com.revolut.com.revolut.demo.jooq.model</packageName>
+                            <directory>${basedir}/src/main/java</directory>
+                        </target>
+                    </generator>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-meta-extensions</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!--  <plugin>
+                  <groupId>org.flywaydb</groupId>
+                  <artifactId>flyway-maven-plugin</artifactId>
+                  <version>4.0.3</version>
+                  <executions>
+                      <execution>
+                          <phase>generate-sources</phase>
+                          <goals>
+                              <goal>migrate</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                  <configuration>
+                      <user>${db.username}</user>
+                      <schemas>
+                          <schema>REVOLUT_DB_4</schema>
+                      </schemas>
+                      <url>${db.url}</url>
+                      <locations>
+                          <location>filesystem:src/main/resources/db/migration</location>
+                      </locations>
+                  </configuration>
+              </plugin>-->
+        </plugins>
+    </build>
+</project>
