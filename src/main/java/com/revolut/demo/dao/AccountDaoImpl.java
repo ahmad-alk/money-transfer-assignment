@@ -6,8 +6,8 @@ import com.revolut.demo.exception.OptimisticLockException;
 import com.revolut.demo.jooq.model.revolut_db_4.tables.records.AccountRecord;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.TransactionalRunnable;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
@@ -61,51 +61,47 @@ public class AccountDaoImpl implements AccountDao {
 
     @Override
     public void transfer(AccountRecord accountFrom, AccountRecord accountTo, Integer amount) {
-        try {
-            Integer versionAccFrom = setOptimisticLockForAccount(accountFrom);
-            Integer versionAccTo = setOptimisticLockForAccount(accountTo);
 
-            db.transaction(new TransactionalRunnable() {
-                @Override
-                public void run(Configuration configuration) throws Throwable {
-                    AccountDaoImpl.this.startTransfer(configuration, accountFrom, accountTo, amount, versionAccFrom, versionAccTo);
-                }
-            });
+        // Start Transaction
+        db.transaction(configuration -> {
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            DSL.using(configuration)
+                    .update(ACCOUNT)
+                    .set(ACCOUNT.ACC_BALANCE, accountFrom.getAccBalance() - amount)
+                    .where(ACCOUNT.ACC_NO.eq(accountFrom.getAccNo()))
+                    .execute();
+
+
+            using(configuration)
+                    .update(ACCOUNT)
+                    .set(ACCOUNT.ACC_BALANCE, accountTo.getAccBalance() + amount)
+                    .where(ACCOUNT.ACC_NO.eq(accountTo.getAccNo()))
+                    .execute();
+
+
+            boolean lock1 = setOptimisticLockForAccount(accountFrom, configuration);
+            boolean lock2 = setOptimisticLockForAccount(accountTo, configuration);
+
+            if (!lock1 || !lock2) {
+                throw new OptimisticLockException();
+            }
+        });
+
+    }
+
+
+    boolean setOptimisticLockForAccount(AccountRecord account, Configuration configuration) throws SQLException {
+        int version = account.get(ACCOUNT.ACC_VERSION) + 1;
+        Record1<Integer> dbVersion = using(configuration).select(ACCOUNT.ACC_VERSION).from(ACCOUNT).where(ACCOUNT.ACC_NO.eq(account.getAccNo())).fetchAny();
+
+        if (dbVersion.value1() + 1 == version) {
+            using(configuration).update(ACCOUNT)
+                    .set(ACCOUNT.ACC_VERSION, version)
+                    .where(ACCOUNT.ACC_NO.eq(account.getAccNo()))
+                    .execute();
+            return true;
         }
+        return false;
     }
 
-    void startTransfer(Configuration configuration, AccountRecord accountFrom, AccountRecord accountTo, Integer amount, Integer versionAccFrom, Integer versionAccTo) {
-        int updatedRecordsFromAccount =
-                DSL.using(configuration)
-                        .update(ACCOUNT)
-                        .set(ACCOUNT.ACC_BALANCE, accountFrom.getAccBalance() - amount)
-                        .where(ACCOUNT.ACC_NO.eq(accountFrom.getAccNo())
-                                .and(ACCOUNT.ACC_VERSION.eq(versionAccFrom)))
-                        .execute();
-
-        int updatedRecordsToAccount =
-                using(configuration)
-                        .update(ACCOUNT)
-                        .set(ACCOUNT.ACC_BALANCE, accountTo.getAccBalance() + amount)
-                        .where(ACCOUNT.ACC_NO.eq(accountTo.getAccNo())
-                                .and(ACCOUNT.ACC_VERSION.eq(versionAccTo)))
-                        .execute();
-
-        if (updatedRecordsFromAccount <= 0 || updatedRecordsToAccount <= 0) {
-            throw new OptimisticLockException();
-        }
-    }
-
-    Integer setOptimisticLockForAccount(AccountRecord account) throws SQLException {
-        Integer version = account.get(ACCOUNT.ACC_VERSION) + 1;
-        db.update(ACCOUNT)
-                .set(ACCOUNT.ACC_VERSION, version)
-                .where(ACCOUNT.ACC_NO.eq(account.getAccNo()))
-                .execute();
-        connection.commit();
-        return version;
-    }
 }
