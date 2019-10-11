@@ -143,7 +143,7 @@
                             </properties>
                         </database>
                         <target>
-                            <packageName>com.revolut.com.revolut.demo.jooq.model</packageName>
+                            <packageName>com.revolut.demo.jooq.model</packageName>
                             <directory>${basedir}/src/main/java</directory>
                         </target>
                     </generator>
@@ -157,29 +157,29 @@
                 </dependencies>
             </plugin>
 
-            <!--  <plugin>
-                  <groupId>org.flywaydb</groupId>
-                  <artifactId>flyway-maven-plugin</artifactId>
-                  <version>4.0.3</version>
-                  <executions>
-                      <execution>
-                          <phase>generate-sources</phase>
-                          <goals>
-                              <goal>migrate</goal>
-                          </goals>
-                      </execution>
-                  </executions>
-                  <configuration>
-                      <user>${db.username}</user>
-                      <schemas>
-                          <schema>REVOLUT_DB_4</schema>
-                      </schemas>
-                      <url>${db.url}</url>
-                      <locations>
-                          <location>filesystem:src/main/resources/db/migration</location>
-                      </locations>
-                  </configuration>
-              </plugin>-->
+            <!--<plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>4.0.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <user>${db.username}</user>
+                    <schemas>
+                        <schema>REVOLUT_SCHEMA</schema>
+                    </schemas>
+                    <url>${db.url}</url>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration</location>
+                    </locations>
+                </configuration>
+            </plugin>-->
         </plugins>
     </build>
 </project>

@@ -4,7 +4,7 @@
 package com.revolut.demo.jooq.model;
 
 
-import com.revolut.demo.jooq.model.revolut_db_4.RevolutDb_4;
+import com.revolut.demo.jooq.model.revolut_schema.RevolutSchema;
 import org.jooq.Schema;
 import org.jooq.impl.CatalogImpl;
 
@@ -27,7 +27,7 @@ import java.util.List;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class DefaultCatalog extends CatalogImpl {
 
-    private static final long serialVersionUID = -1148202601;
+    private static final long serialVersionUID = 518853939;
 
     /**
      * The reference instance of <code></code>
@@ -35,9 +35,9 @@ public class DefaultCatalog extends CatalogImpl {
     public static final DefaultCatalog DEFAULT_CATALOG = new DefaultCatalog();
 
     /**
-     * The schema <code>REVOLUT_DB_4</code>.
+     * The schema <code>REVOLUT_SCHEMA</code>.
      */
-    public final RevolutDb_4 REVOLUT_DB_4 = RevolutDb_4.REVOLUT_DB_4;
+    public final RevolutSchema REVOLUT_SCHEMA = com.revolut.demo.jooq.model.revolut_schema.RevolutSchema.REVOLUT_SCHEMA;
 
     /**
      * No further instances allowed
@@ -55,6 +55,6 @@ public class DefaultCatalog extends CatalogImpl {
 
     private final List<Schema> getSchemas0() {
         return Arrays.<Schema>asList(
-                RevolutDb_4.REVOLUT_DB_4);
+                RevolutSchema.REVOLUT_SCHEMA);
     }
 }

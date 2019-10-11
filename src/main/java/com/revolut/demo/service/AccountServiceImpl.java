@@ -4,7 +4,7 @@ import com.revolut.demo.dao.AccountDao;
 import com.revolut.demo.dao.AccountDaoImpl;
 import com.revolut.demo.dto.TransferDto;
 import com.revolut.demo.exception.RevolutBusinessException;
-import com.revolut.demo.jooq.model.revolut_db_4.tables.records.AccountRecord;
+import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 
 import static com.revolut.demo.constant.RevolutResponseCode.*;
 

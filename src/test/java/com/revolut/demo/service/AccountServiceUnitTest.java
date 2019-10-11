@@ -4,7 +4,7 @@ import com.revolut.demo.constant.RevolutResponseCode;
 import com.revolut.demo.dao.AccountDao;
 import com.revolut.demo.dto.TransferDto;
 import com.revolut.demo.exception.RevolutBusinessException;
-import com.revolut.demo.jooq.model.revolut_db_4.tables.records.AccountRecord;
+import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import static com.googlecode.catchexception.apis.BDDCatchException.caughtException;
@@ -31,7 +32,7 @@ public class AccountServiceUnitTest {
     @Test
     public void should_not_transfer_money_for_unauthorized_user() {
         // Given
-        TransferDto transferDto = new TransferDto(1000, 1000, 30, 1);
+        TransferDto transferDto = new TransferDto(1000, 1000, BigDecimal.valueOf(30), 1);
 
         // When
         Mockito.doReturn(false).when(accountDao).authorizedUserAccount(transferDto);
@@ -44,7 +45,7 @@ public class AccountServiceUnitTest {
     @Test
     public void should_not_transfer_money_for_illegal_transaction() {
         // Given
-        TransferDto transferDto = new TransferDto(1000, 1000, 30, 1);
+        TransferDto transferDto = new TransferDto(1000, 1000, BigDecimal.valueOf(30), 1);
 
         // When
         Mockito.doReturn(true).when(accountDao).authorizedUserAccount(transferDto);
@@ -57,7 +58,7 @@ public class AccountServiceUnitTest {
     @Test
     public void should_not_transfer_money_for_non_active_sender_account() {
         // Given
-        TransferDto transferDto = new TransferDto(3000, 1000, 30, 3);
+        TransferDto transferDto = new TransferDto(3000, 1000, BigDecimal.valueOf(30), 3);
 
         // When
         Mockito.doReturn(true).when(accountDao).authorizedUserAccount(transferDto);
@@ -70,9 +71,9 @@ public class AccountServiceUnitTest {
     @Test
     public void should_not_transfer_money_for_non_active_receiver_account() {
         // Given
-        TransferDto transferDto = new TransferDto(1000, 3000, 30, 1);
-        AccountRecord accountFrom = new AccountRecord(1000L, 300L, Short.valueOf("1"), "test", new Timestamp(100L), 1, 1);
-        AccountRecord accountTo = new AccountRecord(2000L, 100L, Short.valueOf("1"), "test", new Timestamp(100L), 1, 2);
+        TransferDto transferDto = new TransferDto(1000, 3000, BigDecimal.valueOf(30), 1);
+        AccountRecord accountFrom = new AccountRecord(1000L, BigDecimal.valueOf(300L), Short.valueOf("1"), "test", new Timestamp(100L), 1, 1);
+        AccountRecord accountTo = new AccountRecord(2000L, BigDecimal.valueOf(100L), Short.valueOf("1"), "test", new Timestamp(100L), 1, 2);
 
         // When
         Mockito.doReturn(true).when(accountDao).authorizedUserAccount(transferDto);
@@ -89,9 +90,9 @@ public class AccountServiceUnitTest {
     @Test
     public void should_not_transfer_money_for_funds_insufficient() {
         // Given
-        TransferDto transferDto = new TransferDto(1000, 3000, 30000, 1);
-        AccountRecord accountFrom = new AccountRecord(1000L, 300L, Short.valueOf("1"), "test", new Timestamp(100L), 1, 1);
-        AccountRecord accountTo = new AccountRecord(2000L, 100L, Short.valueOf("1"), "test", new Timestamp(100L), 1, 2);
+        TransferDto transferDto = new TransferDto(1000, 3000, BigDecimal.valueOf(30000), 1);
+        AccountRecord accountFrom = new AccountRecord(1000L, BigDecimal.valueOf(300L), Short.valueOf("1"), "test", new Timestamp(100L), 1, 1);
+        AccountRecord accountTo = new AccountRecord(2000L, BigDecimal.valueOf(100L), Short.valueOf("1"), "test", new Timestamp(100L), 1, 2);
 
         // When
         Mockito.doReturn(true).when(accountDao).authorizedUserAccount(transferDto);

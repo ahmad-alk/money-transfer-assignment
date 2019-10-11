@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -43,7 +44,7 @@ public class AccountControllerIntegrationTest {
     @Test
     public void should_transfer_money() {
 
-        TransferDto transferDto = new TransferDto(1000, 2000, 30, 1);
+        TransferDto transferDto = new TransferDto(1000, 2000, BigDecimal.valueOf(30), 1);
 
         given().body(transferDto)
                 .when().post("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transfer")
@@ -53,7 +54,7 @@ public class AccountControllerIntegrationTest {
     @Test
     public void should_not_transfer_money_for_unauthorized_user() {
 
-        TransferDto transferDto = new TransferDto(2000, 1000, 30, 1);
+        TransferDto transferDto = new TransferDto(2000, 1000, BigDecimal.valueOf(30), 1);
 
         given().body(transferDto)
                 .when().post("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transfer")
@@ -69,7 +70,7 @@ public class AccountControllerIntegrationTest {
     @Test
     public void should_not_transfer_money_for_illegal_transaction() {
 
-        TransferDto transferDto = new TransferDto(1000, 1000, 30, 1);
+        TransferDto transferDto = new TransferDto(1000, 1000, BigDecimal.valueOf(30), 1);
 
         given().body(transferDto)
                 .when().post("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transfer")
@@ -85,7 +86,7 @@ public class AccountControllerIntegrationTest {
     @Test
     public void should_not_transfer_money_for_non_active_sender_account() {
 
-        TransferDto transferDto = new TransferDto(3000, 1000, 30, 3);
+        TransferDto transferDto = new TransferDto(3000, 1000, BigDecimal.valueOf(30), 3);
 
         given().body(transferDto)
                 .when().post("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transfer")
@@ -101,7 +102,7 @@ public class AccountControllerIntegrationTest {
     @Test
     public void should_not_transfer_money_for_non_active_receiver_account() {
 
-        TransferDto transferDto = new TransferDto(1000, 3000, 30, 1);
+        TransferDto transferDto = new TransferDto(1000, 3000, BigDecimal.valueOf(30), 1);
 
         given().body(transferDto)
                 .when().post("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transfer")
@@ -117,7 +118,7 @@ public class AccountControllerIntegrationTest {
     @Test
     public void should_not_transfer_money_for_funds_insufficient() {
 
-        TransferDto transferDto = new TransferDto(1000, 2000, 100_001, 1);
+        TransferDto transferDto = new TransferDto(1000, 2000, BigDecimal.valueOf(999999999999L), 1);
 
         given().body(transferDto)
                 .when().post("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transfer")

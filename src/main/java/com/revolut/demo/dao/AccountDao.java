@@ -1,7 +1,9 @@
 package com.revolut.demo.dao;
 
 import com.revolut.demo.dto.TransferDto;
-import com.revolut.demo.jooq.model.revolut_db_4.tables.records.AccountRecord;
+import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
+
+import java.math.BigDecimal;
 
 /**
  * Interface for generic CRUD operations for
@@ -23,7 +25,7 @@ public interface AccountDao {
      * @param amount  amount to send
      * @return true if account.availableBalance > amount, false otherwise.
      */
-    boolean isAvailableBalance(AccountRecord account, Integer amount);
+    boolean isAvailableBalance(AccountRecord account, BigDecimal amount);
 
     /**
      * Check if the user_id owns this account_no, transfer money from his account not other.
@@ -47,5 +49,5 @@ public interface AccountDao {
      * @param amount      amount to send
      * @throws {@link com.revolut.demo.exception.OptimisticLockException}
      */
-    void transfer(AccountRecord accountFrom, AccountRecord accountTo, Integer amount);
+    void transfer(AccountRecord accountFrom, AccountRecord accountTo, BigDecimal amount);
 }

@@ -1,6 +1,6 @@
 package com.revolut.demo.validator;
 
-import com.revolut.demo.jooq.model.revolut_db_4.tables.records.AccountRecord;
+import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 
 import java.util.function.Predicate;
 

@@ -1,6 +1,7 @@
 package com.revolut.demo.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Represents the data which should be sent to the money-transfer API.
@@ -14,7 +15,7 @@ public class TransferDto implements Serializable {
 
     private long acc_to;
 
-    private Integer amount;
+    private BigDecimal amount;
 
     /**
      * This will be used to ensure the acc_from is related to user_id
@@ -24,7 +25,8 @@ public class TransferDto implements Serializable {
     public TransferDto() {
     }
 
-    public TransferDto(long acc_from, long acc_to, Integer amount, Integer user_id) {
+
+    public TransferDto(long acc_from, long acc_to, BigDecimal amount, Integer user_id) {
         this.acc_from = acc_from;
         this.acc_to = acc_to;
         this.amount = amount;
@@ -39,7 +41,7 @@ public class TransferDto implements Serializable {
         return acc_to;
     }
 
-    public Integer getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

@@ -3,7 +3,7 @@ package com.revolut.demo.dao;
 import com.revolut.demo.config.DatasourceConfig;
 import com.revolut.demo.dto.TransferDto;
 import com.revolut.demo.exception.OptimisticLockException;
-import com.revolut.demo.jooq.model.revolut_db_4.tables.records.AccountRecord;
+import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
@@ -11,10 +11,11 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.revolut.demo.jooq.model.revolut_db_4.Tables.ACCOUNT;
+import static com.revolut.demo.jooq.model.revolut_schema.Tables.ACCOUNT;
 import static org.jooq.SQLDialect.H2;
 import static org.jooq.impl.DSL.using;
 
@@ -40,8 +41,8 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public boolean isAvailableBalance(AccountRecord account, Integer amount) {
-        return amount <= account.getAccBalance();
+    public boolean isAvailableBalance(AccountRecord account, BigDecimal amount) {
+        return amount.compareTo(account.getAccBalance()) <= 0;
     }
 
     @Override
@@ -60,21 +61,21 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public void transfer(AccountRecord accountFrom, AccountRecord accountTo, Integer amount) {
+    public void transfer(AccountRecord accountFrom, AccountRecord accountTo, BigDecimal amount) {
 
         // Start Transaction
         db.transaction(configuration -> {
 
             DSL.using(configuration)
                     .update(ACCOUNT)
-                    .set(ACCOUNT.ACC_BALANCE, accountFrom.getAccBalance() - amount)
+                    .set(ACCOUNT.ACC_BALANCE, accountFrom.getAccBalance().subtract(amount))
                     .where(ACCOUNT.ACC_NO.eq(accountFrom.getAccNo()))
                     .execute();
 
 
             using(configuration)
                     .update(ACCOUNT)
-                    .set(ACCOUNT.ACC_BALANCE, accountTo.getAccBalance() + amount)
+                    .set(ACCOUNT.ACC_BALANCE, accountTo.getAccBalance().add(amount))
                     .where(ACCOUNT.ACC_NO.eq(accountTo.getAccNo()))
                     .execute();
 
