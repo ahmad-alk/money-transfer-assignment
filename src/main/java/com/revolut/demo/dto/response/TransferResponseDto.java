@@ -1,4 +1,4 @@
-package com.revolut.demo.dto;
+package com.revolut.demo.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

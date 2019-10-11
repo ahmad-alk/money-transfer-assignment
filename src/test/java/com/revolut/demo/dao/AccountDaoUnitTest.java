@@ -1,6 +1,6 @@
 package com.revolut.demo.dao;
 
-import com.revolut.demo.dto.TransferDto;
+import com.revolut.demo.dto.request.TransferDto;
 import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 import org.jooq.Context;
 import org.jooq.DSLContext;

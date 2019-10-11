@@ -2,7 +2,7 @@ package com.revolut.demo.service;
 
 import com.revolut.demo.constant.RevolutResponseCode;
 import com.revolut.demo.dao.AccountDao;
-import com.revolut.demo.dto.TransferDto;
+import com.revolut.demo.dto.request.TransferDto;
 import com.revolut.demo.exception.RevolutBusinessException;
 import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 import org.junit.Test;
@@ -107,5 +107,9 @@ public class AccountServiceUnitTest {
         then(caughtException()).isInstanceOf(RevolutBusinessException.class).hasMessage(RevolutResponseCode.BR005.toString());
     }
 
+    @Test
+    public void should_return_transaction_details() {
+
+    }
 
 }

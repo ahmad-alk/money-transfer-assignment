@@ -4,7 +4,7 @@ import com.revolut.demo.App;
 import com.revolut.demo.config.DatasourceConfig;
 import com.revolut.demo.constant.ApiConstants;
 import com.revolut.demo.constant.RevolutResponseCode;
-import com.revolut.demo.dto.TransferDto;
+import com.revolut.demo.dto.request.TransferDto;
 import io.javalin.Javalin;
 import io.restassured.http.ContentType;
 import org.eclipse.jetty.http.HttpStatus;
@@ -22,6 +22,7 @@ import java.sql.SQLException;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(JUnit4.class)
 public class AccountControllerIntegrationTest {
@@ -132,9 +133,34 @@ public class AccountControllerIntegrationTest {
     }
 
 
+    @Test
+    public void should_return_transaction_details() {
+        given()
+                .when().get("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transactions/04250760-ec2e-11e9-81b4-2a2ae2dbcce4")
+                .then()
+                .statusCode(HttpStatus.OK_200)
+                .contentType(ContentType.JSON)
+                .assertThat()
+                .body("size()", is(1))
+                .body("id[0]", is("04250760-ec2e-11e9-81b4-2a2ae2dbcce4"))
+                .body("acc_from[0]", is("1000"))
+                .body("amount[0]", is("20.000"))
+                .body("status[0]", is("SUCCESS"));
+    }
+
+    @Test
+    public void should_not_return_transaction_details() {
+        given()
+                .when().get("http://localhost:" + ApiConstants.APPLICATION_PORT + ApiConstants.API_URL + "/transactions/xyz123")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT_204)
+                .assertThat();
+    }
+
     @AfterClass
     public static void teardown() throws SQLException {
         connection.close();
         start.stop();
     }
+
 }

@@ -2,9 +2,12 @@ package com.revolut.demo.service;
 
 import com.revolut.demo.dao.AccountDao;
 import com.revolut.demo.dao.AccountDaoImpl;
-import com.revolut.demo.dto.TransferDto;
+import com.revolut.demo.dto.request.TransferDto;
+import com.revolut.demo.dto.response.TransactionDetailsResponse;
 import com.revolut.demo.exception.RevolutBusinessException;
 import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
+
+import java.util.Set;
 
 import static com.revolut.demo.constant.RevolutResponseCode.*;
 
@@ -33,5 +36,10 @@ public class AccountServiceImpl implements AccountService {
             throw new RevolutBusinessException(BR005);
 
         accountDao.transfer(accountFrom, accountTo, transferDto.getAmount());
+    }
+
+    @Override
+    public Set<TransactionDetailsResponse> transactionDetails(String trx_id) {
+        return accountDao.getTransactionDetails(trx_id);
     }
 }

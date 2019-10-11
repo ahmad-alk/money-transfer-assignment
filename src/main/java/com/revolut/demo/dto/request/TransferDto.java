@@ -1,4 +1,4 @@
-package com.revolut.demo.dto;
+package com.revolut.demo.dto.request;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

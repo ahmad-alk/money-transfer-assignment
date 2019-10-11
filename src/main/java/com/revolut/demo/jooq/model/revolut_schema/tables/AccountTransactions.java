@@ -50,7 +50,7 @@ public class AccountTransactions extends TableImpl<AccountTransactionsRecord> {
     /**
      * The column <code>REVOLUT_SCHEMA.ACCOUNT_TRANSACTIONS.AT_ID</code>.
      */
-    public final TableField<AccountTransactionsRecord, Integer> AT_ID = createField(DSL.name("AT_ID"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<AccountTransactionsRecord, String> AT_ID = createField(DSL.name("AT_ID"), org.jooq.impl.SQLDataType.VARCHAR(45), this, "");
 
     /**
      * The column <code>REVOLUT_SCHEMA.ACCOUNT_TRANSACTIONS.AT_FROM</code>.

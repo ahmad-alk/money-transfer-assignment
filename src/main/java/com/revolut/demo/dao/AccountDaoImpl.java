@@ -1,21 +1,27 @@
 package com.revolut.demo.dao;
 
 import com.revolut.demo.config.DatasourceConfig;
-import com.revolut.demo.dto.TransferDto;
+import com.revolut.demo.dto.request.TransferDto;
+import com.revolut.demo.dto.response.TransactionDetailsResponse;
 import com.revolut.demo.exception.OptimisticLockException;
 import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
-import org.jooq.Configuration;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Result;
+import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountTransactionsRecord;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
+import static com.revolut.demo.constant.TransactionStatus.FAILED;
+import static com.revolut.demo.constant.TransactionStatus.SUCCESS;
 import static com.revolut.demo.jooq.model.revolut_schema.Tables.ACCOUNT;
+import static com.revolut.demo.jooq.model.revolut_schema.Tables.ACCOUNT_TRANSACTIONS;
 import static org.jooq.SQLDialect.H2;
 import static org.jooq.impl.DSL.using;
 
@@ -64,6 +70,7 @@ public class AccountDaoImpl implements AccountDao {
     public void transfer(AccountRecord accountFrom, AccountRecord accountTo, BigDecimal amount) {
 
         // Start Transaction
+        AtomicBoolean success = new AtomicBoolean(true);
         db.transaction(configuration -> {
 
             DSL.using(configuration)
@@ -84,10 +91,39 @@ public class AccountDaoImpl implements AccountDao {
             boolean lock2 = setOptimisticLockForAccount(accountTo, configuration);
 
             if (!lock1 || !lock2) {
+                success.set(false);
                 throw new OptimisticLockException();
             }
         });
 
+        if (success.get()) {
+            db.insertInto(ACCOUNT_TRANSACTIONS).columns(ACCOUNT_TRANSACTIONS.AT_ID, ACCOUNT_TRANSACTIONS.AT_FROM, ACCOUNT_TRANSACTIONS.AT_TO, ACCOUNT_TRANSACTIONS.AT_AMOUNT, ACCOUNT_TRANSACTIONS.AT_STATUS, ACCOUNT_TRANSACTIONS.AT_REMARKS)
+                    .values(UUID.randomUUID().toString(), accountFrom.getAccNo(), accountTo.getAccNo(), amount, SUCCESS.name(), "").execute();
+        } else {
+            db.insertInto(ACCOUNT_TRANSACTIONS).columns(ACCOUNT_TRANSACTIONS.AT_ID, ACCOUNT_TRANSACTIONS.AT_FROM, ACCOUNT_TRANSACTIONS.AT_TO, ACCOUNT_TRANSACTIONS.AT_AMOUNT, ACCOUNT_TRANSACTIONS.AT_STATUS, ACCOUNT_TRANSACTIONS.AT_REMARKS)
+                    .values(UUID.randomUUID().toString(), accountFrom.getAccNo(), accountTo.getAccNo(), amount, FAILED.name(), "").execute();
+
+        }
+
+    }
+
+    @Override
+    public Set<TransactionDetailsResponse> getTransactionDetails(String trx_id) {
+        Result<Record> transactions = db.select().from(ACCOUNT_TRANSACTIONS).where(ACCOUNT_TRANSACTIONS.AT_ID.eq(trx_id)).fetch();
+
+        return transactions.stream().map(transaction -> {
+            AccountTransactionsRecord transactionRecord = (AccountTransactionsRecord) transaction;
+
+            TransactionDetailsResponse transactionDetailsResponse = new TransactionDetailsResponse();
+            transactionDetailsResponse.setId(transactionRecord.getAtId());
+            transactionDetailsResponse.setAcc_from("" + transactionRecord.getAtFrom());
+            transactionDetailsResponse.setAcc_to("" + transactionRecord.getAtTo());
+            transactionDetailsResponse.setAmount(transactionRecord.getAtAmount().toPlainString());
+            transactionDetailsResponse.setRemarks(transactionRecord.getAtRemarks());
+            transactionDetailsResponse.setDate(transactionRecord.getAtDate().toString());
+            transactionDetailsResponse.setStatus(transactionRecord.getAtStatus());
+            return transactionDetailsResponse;
+        }).collect(Collectors.toSet());
     }
 
 

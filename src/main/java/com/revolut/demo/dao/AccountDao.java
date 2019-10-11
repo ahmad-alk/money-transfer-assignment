@@ -1,9 +1,11 @@
 package com.revolut.demo.dao;
 
-import com.revolut.demo.dto.TransferDto;
+import com.revolut.demo.dto.request.TransferDto;
+import com.revolut.demo.dto.response.TransactionDetailsResponse;
 import com.revolut.demo.jooq.model.revolut_schema.tables.records.AccountRecord;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * Interface for generic CRUD operations for
@@ -50,4 +52,14 @@ public interface AccountDao {
      * @throws {@link com.revolut.demo.exception.OptimisticLockException}
      */
     void transfer(AccountRecord accountFrom, AccountRecord accountTo, BigDecimal amount);
+
+
+    /**
+     * Get Transaction Details
+     *
+     * @param trx_id transaction_id
+     * @return Json response for {@link com.revolut.demo.dto.response.TransactionDetailsResponse}
+     */
+
+    Set<TransactionDetailsResponse> getTransactionDetails(String trx_id);
 }
