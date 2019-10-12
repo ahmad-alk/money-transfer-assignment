@@ -20,14 +20,14 @@ Simple project service for money transfer built with Java.
 
 * `codearte.catch-exception`: catches exceptions in a single line of code and makes them available for further analysis.
 
-# API endpoints
+# API Endpoints
 API end points are managed in a simple Java Constants file, ApiConstants.
 
 _`/api/v1/accounts`_
 
 By default anything under `/api/v1/accounts` is where your clients interact with your services.
 
-_`/Transfer`_ :
+1. _`/Transfer`_ :
 returns 200 OK for successful transfer, 400 Bad Request otherwise.
 
 _`Error Response Codes:`_
@@ -66,6 +66,28 @@ _`Error Response Codes:`_
       "description" : "Unauthorized User To The Account"
   }
 }
+```
+#
+2 . _`/transactions/:trx_id`_ :
+returns 200 OK with response body for successful get, _204 no content_ otherwise.
+
+# Path Param
+`trx_id`: Transaction Id.
+
+
+# Json Response
+```json
+[
+    {
+        "id": "04250760-ec2e-11e9-81b4-2a2ae2dbcce4",
+        "acc_from": "1000",
+        "acc_to": "2000",
+        "amount": "20.000",
+        "date": "2019-10-11 17:55:38.237447",
+        "status": "SUCCESS",
+        "remarks": "Remarks here"
+    }
+]
 ```
 
 # Testing
