@@ -12,6 +12,7 @@ public class DatasourceConfig {
 
     private static HikariDataSource hikariDataSource;
 
+    private DatasourceConfig(){}
 
     public static DataSource getInstance() {
 
