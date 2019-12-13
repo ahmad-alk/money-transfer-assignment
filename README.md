@@ -1,6 +1,6 @@
 # Money Transfer [![Build Status](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment.svg?branch=master "Travis CI")](https://travis-ci.org/ahmad-alkhatib/money-transfer-assignment) 
 
-Simple project service for money transfer built with Java.
+An assignment for FinTech company for a simple money transfer service project, the challenge is not to use Spring Framework & Hibernate.
 
 # What dependencies I have used ?
 
