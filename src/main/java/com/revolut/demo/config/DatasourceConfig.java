@@ -19,7 +19,6 @@ public class DatasourceConfig {
         if (null == hikariDataSource) {
 
             HikariConfig hikariConfig = new HikariConfig();
-//            hikariConfig.setJdbcUrl("jdbc_url=jdbc:h2:tcp://localhost/~/revolut_schema;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
             hikariConfig.setJdbcUrl("jdbc:h2:mem:revolut_schema;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
             hikariConfig.setUsername("sa");
             hikariConfig.setPassword("");

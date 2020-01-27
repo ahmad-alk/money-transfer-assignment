@@ -3,12 +3,8 @@ package com.revolut.demo.dto.request;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * Represents the data which should be sent to the money-transfer API.
- *
- * @author ahmad.alkhatib
- * @version 1.0
- */
+
+// Represents the data which should be sent to the money-transfer API.
 public class TransferDto implements Serializable {
 
     private long acc_from;
@@ -17,9 +13,7 @@ public class TransferDto implements Serializable {
 
     private BigDecimal amount;
 
-    /**
-     * This will be used to ensure the acc_from is related to user_id
-     */
+    //This will be used to ensure the acc_from is related to user_id
     private Integer user_id;
 
     public TransferDto() {

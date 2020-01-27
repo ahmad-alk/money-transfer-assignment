@@ -8,9 +8,7 @@ import java.util.Set;
 
 public interface AccountService {
 
-    // Add Business code
     void transferMoney(TransferDto transferDto) throws RevolutBusinessException;
-
 
     Set<TransactionDetailsResponse> transactionDetails(String trx_id);
 }

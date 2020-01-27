@@ -1,8 +1,7 @@
 package com.revolut.demo.constant;
 
-/**
- * In exceptional circumstances it is useful to provide a code and meaningful response to clients
- */
+
+// In exceptional circumstances it is useful to provide a code and meaningful response to clients
 public enum RevolutResponseCode {
     BR001("Unauthorized User To The Account"),
     BR002("Illegal transaction to same account"),
@@ -11,7 +10,7 @@ public enum RevolutResponseCode {
     BR005("Funds Insufficient"),
     ;
 
-    private String msg;
+    private final String msg;
 
     RevolutResponseCode(String msg) {
         this.msg = msg;

@@ -107,9 +107,5 @@ public class AccountServiceUnitTest {
         then(caughtException()).isInstanceOf(RevolutBusinessException.class).hasMessage(RevolutResponseCode.BR005.toString());
     }
 
-    @Test
-    public void should_return_transaction_details() {
-
-    }
 
 }

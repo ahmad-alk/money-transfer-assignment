@@ -38,11 +38,7 @@ public class App {
             });
 
             //Transaction Details Endpoint
-            path(API_URL + "/transactions", () -> {
-                path(":trx_id", () -> {
-                    get(AccountController.getTrxDetails);
-                });
-            });
+            path(API_URL + "/transactions", () -> path(":trx_id", () -> get(AccountController.getTrxDetails)));
 
         }).start(APPLICATION_PORT);
 

@@ -11,8 +11,6 @@ import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,15 +25,12 @@ import static org.jooq.impl.DSL.using;
 
 public class AccountDaoImpl implements AccountDao {
 
-    private DataSource dataSource = DatasourceConfig.getInstance();
-    private Connection connection = DatasourceConfig.getConnection();
-    private DSLContext db = using(dataSource, H2);
+    private final DataSource dataSource = DatasourceConfig.getInstance();
+    private final DSLContext db = using(dataSource, H2);
     private static AccountDaoImpl accountDAO = null;
 
 
-    /**
-     * Initializes a newly created {@code AccountDao} object.
-     */
+    // Initializes a newly created {@code AccountDao} object.
     public static AccountDaoImpl getInstance() {
         if (null == accountDAO) accountDAO = new AccountDaoImpl();
         return accountDAO;
@@ -127,7 +122,7 @@ public class AccountDaoImpl implements AccountDao {
     }
 
 
-    boolean setOptimisticLockForAccount(AccountRecord account, Configuration configuration) throws SQLException {
+    boolean setOptimisticLockForAccount(AccountRecord account, Configuration configuration) {
         int version = account.get(ACCOUNT.ACC_VERSION) + 1;
         Record1<Integer> dbVersion = using(configuration).select(ACCOUNT.ACC_VERSION).from(ACCOUNT).where(ACCOUNT.ACC_NO.eq(account.getAccNo())).fetchAny();
 
